@@ -1,0 +1,20 @@
+config_id: C6
+version: 1
+description: "Cross-encoder re-ranking"
+stage_changed: retrieval
+parsing: layout
+chunking:
+  strategy: structure
+  max_tokens: 256
+  overlap_tokens: 30
+  contextual_headers: false
+embedding_model: BAAI/bge-small-en-v1.5
+retrieval:
+  mode: hybrid
+  candidate_k: 20
+  rrf_k: 60
+rerank:
+  enabled: true
+  model: cross-encoder/ms-marco-MiniLM-L-6-v2
+final_k: 5
+min_relevance: null

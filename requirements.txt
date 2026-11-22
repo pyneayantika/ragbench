@@ -1,0 +1,12 @@
+pymupdf
+pymupdf4llm
+sentence-transformers
+chromadb
+rank-bm25
+rapidfuzz
+groq
+mistralai
+pyyaml
+python-dotenv
+tqdm
+gradio

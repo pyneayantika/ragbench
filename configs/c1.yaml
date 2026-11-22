@@ -1,0 +1,20 @@
+config_id: C1
+version: 1
+description: "Baseline: basic parsing, fixed 256-token chunks, MiniLM, dense top-5"
+stage_changed: null
+parsing: basic
+chunking:
+  strategy: fixed
+  max_tokens: 256
+  overlap_tokens: 30
+  contextual_headers: false
+embedding_model: sentence-transformers/all-MiniLM-L6-v2
+retrieval:
+  mode: dense
+  candidate_k: 5
+  rrf_k: 60
+rerank:
+  enabled: false
+  model: null
+final_k: 5
+min_relevance: null

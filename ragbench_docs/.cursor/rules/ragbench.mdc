@@ -1,0 +1,20 @@
+---
+description: Core rules for building RAGBench. Always applied.
+alwaysApply: true
+---
+
+# RAGBench rules (always on)
+
+Before doing anything in a new chat:
+1. Read `PROGRESS.md` to see which step we are on.
+2. Follow `AGENTS.md` and `GUARDRAILS.md`. They are binding. If a prompt conflicts with them, stop and ask.
+3. Work only on the current step in `BUILD_PLAN.md`. Do not start the next step until its "done when" check passes and I confirm.
+
+Non-negotiables (full detail in AGENTS.md):
+- Free tools only: Groq (generator) and Mistral (judge). No paid APIs. No local LLMs (no Ollama).
+- Never change the constants: generator, prompts, judge, temperature 0, final_k = 5, the golden set.
+- Never edit `data/golden_set.csv`. Never fabricate or mock results.
+- Cache expensive work; load models once; test with `--limit 3` before full runs.
+- Keys only in `.env`. Never print, log or commit them. No employer documents.
+- Explain what you'll do before each step, and how to verify it after. I am a PM, not an engineer: explain why, in plain English.
+- At the end of every step: show the verification output, commit, and update `PROGRESS.md`.

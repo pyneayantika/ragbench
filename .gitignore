@@ -1,0 +1,7 @@
+.env
+.venv/
+cache/
+data/raw/
+reference_v0/
+__pycache__/
+*.pyc
