@@ -21,7 +21,7 @@
 | D10c | 2026-11-22 | Judge model | Keep Mistral vs move the judge to Groq | Groq `qwen/qwen3.8-27b` | A separate judge provider | Judge switched from Mistral to Groq Qwen because the Mistral free plan allowed 0 requests/minute. | |
 | D11 | | Hosting | All on Vercel vs local pipeline + static outputs | Local pipeline, static dashboard, HF Spaces demo | A live re-runnable benchmark | | |
 | D12 | | Fuzzy-match threshold | Exact match vs fuzzy at threshold N | _[fill after Step 5]_ | | | |
-| D13 | | | | | | | |
+| D13 | 2026-11-22 | Citation brackets | Change the generator prompt vs clean the brackets in code | Clean fullwidth brackets in code. The prompt stays exactly as written. | A stored answer that matches the model's raw punctuation | GPT-OSS returns fullwidth citation brackets; normalised in code, prompt unchanged. | |
 
 ## 2. Hypotheses (write before running; fill after Step 10)
 
@@ -39,7 +39,7 @@
 
 | Config | What I expected | What happened (hit@5, correctness, p95) | Surprise? |
 | --- | --- | --- | --- |
-| C1 | | | |
+| C1 | | Test run (FD-01 to FD-03): all three failed at retrieval; summary/hub pages (p.6, p.107, p.140) dominate the top 5 for fund questions. FD-03 answered correctly from an alternative page (p.123): known limitation — golden set lists one supporting passage, so hit@5 can undercount. | |
 | C2 | | | |
 | C3 | | | |
 | C4 | | | |
