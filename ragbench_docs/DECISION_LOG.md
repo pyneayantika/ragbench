@@ -32,14 +32,14 @@
 | H3 | Retrieval | Hybrid search helps most on the fund document | C4 → C5, fund doc | | |
 | H4 | Retrieval | Re-ranking helps most on the guidance doc but adds the most latency | C5 → C6, accuracy vs p95 | | |
 | H5 | Indexing | Context headers still help after re-ranking, where chunks look alike | C6 → C7, fund + guidance | | |
-| H6 | All | Most baseline failures happen before generation | Attribution on C1 | | |
+| H6 | All | Most baseline failures happen before generation | Attribution on C1 | confirmed | 22 of 23 C1 failures (95.7%) occurred at indexing (6) or retrieval (16); only 1 occurred at generation. |
 | H7 | All | No single config wins on all three documents | Winner per doc | | |
 
 ## 3. Config-by-config notes (Step 8)
 
 | Config | What I expected | What happened (hit@5, correctness, p95) | Surprise? |
 | --- | --- | --- | --- |
-| C1 | | Test run (FD-01 to FD-03): all three failed at retrieval; summary/hub pages (p.6, p.107, p.140) dominate the top 5 for fund questions. FD-03 answered correctly from an alternative page (p.123): known limitation — golden set lists one supporting passage, so hit@5 can undercount. | |
+| C1 | Baseline: simple dense retrieval with basic parsing and fixed chunking | Overall correctness 64.2% (AR: 72.5%, FD: 32.5%, GH: 87.5%). Hit@5: 40.7% (AR: 55.6%, FD: 5.6%, GH: 61.1%). P95 latency 1.0s (AR) to 7.7s (GH). Failures: 0 ingestion, 6 indexing, 16 retrieval, 1 generation. | Dense retrieval failed catastrophically on the fund document (hit@5 of 5.6% and 12 retrieval failures), while narrative guidance (GHG Scope 3) scored 87.5% even with basic dense search. |
 | C2 | | | |
 | C3 | | | |
 | C4 | | | |

@@ -1,0 +1,73 @@
+{
+  "generated_at": "2026-11-22T18:18:43Z",
+  "judge_agreement": null,
+  "fuzzy_threshold": 90,
+  "configs": [
+    {
+      "config_id": "C1",
+      "stage_changed": null,
+      "description": "Baseline: basic parsing, fixed 256-token chunks, MiniLM, dense top-5"
+    }
+  ],
+  "results": [
+    {
+      "config_id": "C1",
+      "doc_id": "annual_report",
+      "hit_at_5": 0.5555555555555556,
+      "mrr": 0.3657407407407407,
+      "correctness": 0.725,
+      "faithfulness": 1.0,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 655.0,
+      "latency_p95_ms": 1031.0,
+      "tokens_per_query": 1569.45,
+      "failures_by_stage": {
+        "ingestion": 0,
+        "indexing": 3,
+        "retrieval": 2,
+        "generation": 1
+      }
+    },
+    {
+      "config_id": "C1",
+      "doc_id": "fund_doc",
+      "hit_at_5": 0.05555555555555555,
+      "mrr": 0.013888888888888888,
+      "correctness": 0.325,
+      "faithfulness": 0.9444444444444444,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 558.0,
+      "latency_p95_ms": 1834.0,
+      "tokens_per_query": 1404.15,
+      "failures_by_stage": {
+        "ingestion": 0,
+        "indexing": 2,
+        "retrieval": 12,
+        "generation": 0
+      }
+    },
+    {
+      "config_id": "C1",
+      "doc_id": "ghg_scope3",
+      "hit_at_5": 0.6111111111111112,
+      "mrr": 0.4444444444444444,
+      "correctness": 0.875,
+      "faithfulness": 1.0,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 759.0,
+      "latency_p95_ms": 7737.0,
+      "tokens_per_query": 1543.75,
+      "failures_by_stage": {
+        "ingestion": 0,
+        "indexing": 1,
+        "retrieval": 2,
+        "generation": 0
+      }
+    }
+  ],
+  "winners": {},
+  "failure_examples": []
+}
