@@ -22,7 +22,7 @@
 | 5 | Text match + retrieval metrics | ✅ Done | rapidfuzz partial_ratio at threshold 90, C1 retrieval done | — | Checks 1–3 attribution |
 | 6 | Generation | ✅ Done | Groq openai/gpt-oss-120b, 60 C1 answers generated with citation normalisation | 1c02a9e | Fullwidth citation brackets normalized |
 | 7 | Judge + attribution + aggregate | ✅ Done | Groq qwen/qwen3.8-27b judge, 0 errors, results.json validated against B8 | d96ce6b | H6 confirmed: 22/23 failures before generation |
-| 8A | C2–C7 retrieval-only comparison | ✅ Done | 21 retrieval runs complete; comparison table printed; H3 confirmed (+16.7 pts hit@5 on fund_doc with hybrid); H4 confirmed (MRR 0.375 with rerank) | [next commit] | Zero LLM calls made |
+| 8A | C2–C7 retrieval-only comparison | ✅ Done | 21 retrieval runs complete; comparison table printed; H3 confirmed (+16.7 pts hit@5 on fund_doc with hybrid); H4 confirmed (MRR 0.375 with rerank) | cb0dd4a | Zero LLM calls made |
 | 8B | C2–C7 generate + judge + aggregate | ⬜ Not started | | | |
 | 9 | Hand-score + judge agreement | ⬜ Not started | | | |
 | 10 | Analysis | ⬜ Not started | | | |
