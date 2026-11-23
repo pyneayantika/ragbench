@@ -16,7 +16,7 @@ import sys
 import time
 from pathlib import Path
 
-from src.chunk import chunk_document, get_tokenizer, token_count
+from src.chunk import chunk_document, chunk_sig, get_tokenizer, token_count
 from src.config import load_config
 from src.evaluate import aggregate_document, build_results, score_question, summarise, validate_results
 from src.generate import CALLS_PER_MINUTE, generate_answer
@@ -209,15 +209,30 @@ def append_jsonl(path: Path, record: dict) -> None:
 
 
 def run_retrieve(config_id: str, doc_name: str, force: bool, limit: int | None) -> None:
+    import statistics
     config = load_config(config_id)
-    if str(config["retrieval"]["mode"]) != "dense":
-        raise SystemExit("The retrieve stage in this step only runs dense configs.")
+    sig = chunk_sig(config)
+    logger.info(
+        "Resolved config %s: %s | chunk_sig=%s | parsing=%s | chunking=%s | embed=%s | retrieval=%s | rerank=%s",
+        config["config_id"],
+        config.get("description"),
+        sig,
+        config.get("parsing"),
+        config.get("chunking"),
+        config.get("embedding_model"),
+        config.get("retrieval"),
+        config.get("rerank"),
+    )
     borderlines: list[dict] = []
+    latencies: list[float] = []
     for doc_id in selected_docs(doc_name):
         pages, _page_hit = ingest_document(doc_id, str(config["parsing"]), force=False)
         parsed_text = "\n".join(str(page.get("text") or "") for page in pages)
         chunks, _chunk_hit = chunk_document(doc_id, config, pages, force=False)
         index_document(doc_id, config, chunks, force=False)
+        if config["config_id"].upper() == "C7" and chunks:
+            sample = chunks[0]
+            logger.info("C7 sample chunk embed_text: %s", repr(str(sample.get("embed_text", ""))[:200]))
         path = retrieval_path(config["config_id"], doc_id)
         if force and path.is_file():
             path.unlink()
@@ -226,7 +241,11 @@ def run_retrieve(config_id: str, doc_name: str, force: bool, limit: int | None) 
         if limit is not None:
             pending = pending[:limit]
         for row in pending:
+            t0 = time.perf_counter()
             record, found = score_question(config, doc_id, row, parsed_text, chunks)
+            elapsed_ms = (time.perf_counter() - t0) * 1000.0
+            latencies.append(elapsed_ms)
+            record["latency_ms"] = round(elapsed_ms, 2)
             append_jsonl(path, record)
             borderlines.extend(found)
         summary = summarise(read_jsonl(path))
@@ -241,6 +260,14 @@ def run_retrieve(config_id: str, doc_name: str, force: bool, limit: int | None) 
             summary["indexing"],
             summary["retrieval"],
             summary["passed_retrieval"],
+        )
+    if latencies:
+        logger.info(
+            "%s median retrieval latency: %.1f ms (p95: %.1f ms across %d queries)",
+            config["config_id"],
+            statistics.median(latencies),
+            sorted(latencies)[int(len(latencies) * 0.95)] if len(latencies) > 1 else latencies[0],
+            len(latencies),
         )
     borderlines.sort(key=lambda item: abs(float(item["score"]) - 90))
     logger.info("borderline matches shown=%d collected=%d", min(5, len(borderlines)), len(borderlines))

@@ -29,8 +29,8 @@
 | --- | --- | --- | --- | --- | --- |
 | H1 | Ingestion | Layout-aware parsing gives the biggest single gain on the annual report | C1 → C2, annual report | | |
 | H2 | Indexing | Splitting by headings reduces answers cut across chunks, most on the guidance doc | C2 → C3, check-2 failures | | |
-| H3 | Retrieval | Hybrid search helps most on the fund document | C4 → C5, fund doc | | |
-| H4 | Retrieval | Re-ranking helps most on the guidance doc but adds the most latency | C5 → C6, accuracy vs p95 | | |
+| H3 | Retrieval | Hybrid search helps most on the fund document | C4 → C5, fund doc | confirmed (retrieval) | On fund_doc, hit@5 surged from 0.111 to 0.278 (+16.7 pts) and retrieval failures collapsed to 1. |
+| H4 | Retrieval | Re-ranking helps most on the guidance doc but adds the most latency | C5 → C6, accuracy vs p95 | confirmed (retrieval) | Re-ranking lifted overall MRR to 0.375 (fund MRR +0.165, AR MRR +0.056), while adding ~950ms median latency (275ms to 1218ms). |
 | H5 | Indexing | Context headers still help after re-ranking, where chunks look alike | C6 → C7, fund + guidance | | |
 | H6 | All | Most baseline failures happen before generation | Attribution on C1 | confirmed | 22 of 23 C1 failures (95.7%) occurred at indexing (6) or retrieval (16); only 1 occurred at generation. |
 | H7 | All | No single config wins on all three documents | Winner per doc | | |
@@ -40,12 +40,12 @@
 | Config | What I expected | What happened (hit@5, correctness, p95) | Surprise? |
 | --- | --- | --- | --- |
 | C1 | Baseline: simple dense retrieval with basic parsing and fixed chunking | Overall correctness 64.2% (AR: 72.5%, FD: 32.5%, GH: 87.5%). Hit@5: 40.7% (AR: 55.6%, FD: 5.6%, GH: 61.1%). P95 latency 1.0s (AR) to 7.7s (GH). Failures: 0 ingestion, 6 indexing, 16 retrieval, 1 generation. | Dense retrieval failed catastrophically on the fund document (hit@5 of 5.6% and 12 retrieval failures), while narrative guidance (GHG Scope 3) scored 87.5% even with basic dense search. |
-| C2 | | | |
-| C3 | | | |
-| C4 | | | |
-| C5 | | | |
-| C6 | | | |
-| C7 | | | |
+| C2 | Layout-aware parsing alone (dense search) | Mean hit@5: 0.315 (AR: 0.444, FD: 0.056, GH: 0.444), mean MRR 0.241, median latency 258ms. | PyMuPDF4LLM markdown table syntax (<br>, |) changed token flows; dense search alone didn't overcome table representation. |
+| C3 | Structure-aware chunking (split by headings) | Mean hit@5: 0.315 (AR: 0.389, FD: 0.056, GH: 0.500), mean MRR 0.220, median latency 256ms. | Cut indexing failures from 6 down to 4 across docs. |
+| C4 | Stronger embedding model (BGE-small) | Mean hit@5: 0.333 (AR: 0.333, FD: 0.111, GH: 0.556), mean MRR 0.260, median latency 272ms. | Improved hit@5 on both fund_doc and ghg_scope3 over C3. |
+| C5 | Hybrid search (Dense + BM25 with RRF) | Mean hit@5: 0.426 (AR: 0.444, FD: 0.278, GH: 0.556), mean MRR 0.294, median latency 275ms. | Massive breakthrough on fund_doc (+16.7 pts hit@5); keyword matching found specific fund schemes where dense vectors confused them. |
+| C6 | Cross-encoder re-ranking (top 20 to 5) | Mean hit@5: 0.444 (AR: 0.500, FD: 0.278, GH: 0.556), mean MRR 0.375, median latency 1218ms. | Best overall retrieval precision (MRR 0.375, total retrieval failures down to 6), with a ~950ms latency cost. |
+| C7 | Hybrid + re-ranking + contextual headers | Mean hit@5: 0.426 (AR: 0.500, FD: 0.278, GH: 0.500), mean MRR 0.371, median latency 1183ms. | Contextual headers dropped indexing failures to 2 (lowest of all configs). |
 
 ## 4. Failure examples (Step 10)
 
