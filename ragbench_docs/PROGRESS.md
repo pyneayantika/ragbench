@@ -5,8 +5,8 @@
 
 ## Current status
 
-- **Current step:** Step 12 (Demo chat)
-- **Last updated:** 2026-11-25, Antigravity
+- **Current step:** Step 12B (Pre-launch guardrail check)
+- **Last updated:** 2026-11-26, Antigravity
 - **Blocked on:** nothing
 
 ## Step tracker
@@ -27,7 +27,7 @@
 | 9 | Hand-score + judge agreement | ✅ Done | 20 blind hand scores joined; 18/20 (90.0%) agreement recorded in results.json; 2 disagreements listed | 7771afa | Seed 42, only 0.5-pt partial-credit diffs |
 | 10 | Analysis | ✅ Done | Evidence tables written to results/analysis_tables.md; <10 pt diffs flagged | 85e802c | Human to fill H1–H7, diagnoses, and winners in DECISION_LOG.md |
 | 11 | Dashboard | ✅ Done | Next.js static export built cleanly; all 4 B9 pages read public/results.json | ba86e8a | Vercel deploy steps provided |
-| 12 | Demo chat | ⬜ Not started | | | |
+| 12 | Demo chat | ✅ Done | Gradio demo built (`C7` preloaded), GUARDRAILS §3 enforced, 2 answerable + 2 unanswerable + 1 prompt-injection tested locally | [next commit] | Packaged for HF Spaces |
 | 12B | Pre-launch guardrail check | ⬜ Not started | | | |
 | 13 | Story (case study, Loom, post) | ⬜ Not started | | | |
 
@@ -37,6 +37,7 @@ Status values: ⬜ Not started · 🟡 In progress · ✅ Done · 🔴 Blocked
 
 | Date | Tool | What was done | What's next | Open issues |
 | --- | --- | --- | --- | --- |
+| 2026-11-26 | Antigravity | Step 12 completed: built Gradio 6.32.0 demo (`demo/app.py`) running C7 with GUARDRAILS §3 and HF Spaces packaging; all 5 local tests passed. | Step 12B: Pre-launch guardrail check | None |
 | 2026-11-25 | Antigravity | Step 11 completed: built static Next.js dashboard (Overview, Where it breaks, Failure examples, Method) reading public/results.json, verified local static build. | Step 12: Demo chat (Gradio / HF Spaces) | None |
 | 2026-11-25 | Antigravity | Step 10 analysis helper completed: generated evidence tables for H1–H7, failure examples, and per-doc rankings in results/analysis_tables.md. | Human fills DECISION_LOG.md (winners, failure diagnoses), then load into results.json and build Step 11 Dashboard | None |
 | 2026-11-25 | Antigravity | Step 9 completed: blind hand review of 20 sampled answers (seed 42) yielded 18/20 (90.0%) human-judge agreement, recorded in results.json. | Step 10: Analysis (hypotheses H1-H7, failure examples, winners) | None |
