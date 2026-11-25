@@ -13,7 +13,7 @@ import time
 from datetime import datetime, timezone
 from typing import Any
 
-from groq import APIStatusError, RateLimitError
+from groq import APIConnectionError, APIStatusError, RateLimitError
 
 from src.generate import get_client, pace_judge, record_judge_usage
 from src.prompts import JUDGE_PROMPT
@@ -103,6 +103,11 @@ def _create(prompt: str) -> Any:
             delay = _retry_delay(exc, delay)
             time.sleep(delay)
             delay *= 2
+        except APIConnectionError:
+            if attempt == 5:
+                raise
+            time.sleep(delay)
+            delay *= 2
         except APIStatusError as exc:
             if exc.status_code != 429 or attempt == 5:
                 raise
@@ -112,14 +117,23 @@ def _create(prompt: str) -> Any:
     raise RuntimeError("Judge call failed after 5 retries")
 
 
-def _retry_delay(exc: APIStatusError, fallback: float) -> float:
+def _retry_delay(exc: Exception, fallback: float) -> float:
     headers = getattr(getattr(exc, "response", None), "headers", {}) or {}
     retry_after = headers.get("retry-after")
     if retry_after:
         try:
             return max(fallback, float(retry_after))
         except ValueError:
-            return fallback
+            pass
+    msg = str(exc)
+    match_m = re.search(r"try again in (\d+)m(\d+)(?:\.(\d+))?s", msg)
+    if match_m:
+        mins = float(match_m.group(1))
+        secs = float(match_m.group(2))
+        return max(fallback, mins * 60 + secs + 2.0)
+    match_s = re.search(r"try again in (\d+)(?:\.(\d+))?s", msg)
+    if match_s:
+        return max(fallback, float(match_s.group(1)) + 2.0)
     return fallback
 
 

@@ -414,23 +414,44 @@ def run_judge(config_id: str, doc_name: str, force: bool, limit: int | None) -> 
 def run_aggregate(config_id: str, doc_name: str) -> None:
     from datetime import datetime, timezone
 
-    config = load_config(config_id)
+    all_known_cids = ["C1", "C2", "C3", "C4", "C5", "C6", "C7"]
+    target_cids = all_known_cids if config_id.lower() == "all" else [config_id.upper()]
+
+    configs = []
     documents = []
-    for doc_id in selected_docs(doc_name):
-        judged = read_jsonl(judged_path(config["config_id"], doc_id))
-        if not judged:
+    for cid in all_known_cids:
+        # Include config if it has judged files or is in target_cids
+        try:
+            cfg = load_config(cid)
+        except Exception:
             continue
-        documents.append(
-            aggregate_document(
-                config["config_id"],
-                doc_id,
-                read_jsonl(retrieval_path(config["config_id"], doc_id)),
-                read_jsonl(answers_path(config["config_id"], doc_id)),
-                judged,
+        doc_list = []
+        for doc_id in selected_docs(doc_name):
+            jpath = judged_path(cfg["config_id"], doc_id)
+            if not jpath.is_file():
+                continue
+            judged = read_jsonl(jpath)
+            if not judged:
+                continue
+            doc_list.append(
+                aggregate_document(
+                    cfg["config_id"],
+                    doc_id,
+                    read_jsonl(retrieval_path(cfg["config_id"], doc_id)),
+                    read_jsonl(answers_path(cfg["config_id"], doc_id)),
+                    judged,
+                )
             )
-        )
+        if doc_list and (cid in target_cids or config_id.lower() == "all" or any(j.get("config_id") == cid for j in documents)):
+            configs.append(cfg)
+            documents.extend(doc_list)
+        elif doc_list:
+            # Also keep previously judged configs in results.json
+            configs.append(cfg)
+            documents.extend(doc_list)
+
     payload = build_results(
-        [config],
+        configs,
         documents,
         datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     )

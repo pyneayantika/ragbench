@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-22T18:18:43Z",
+  "generated_at": "2026-11-25T03:54:47Z",
   "judge_agreement": null,
   "fuzzy_threshold": 90,
   "configs": [
@@ -7,6 +7,36 @@
       "config_id": "C1",
       "stage_changed": null,
       "description": "Baseline: basic parsing, fixed 256-token chunks, MiniLM, dense top-5"
+    },
+    {
+      "config_id": "C2",
+      "stage_changed": "ingestion",
+      "description": "Layout-aware parsing"
+    },
+    {
+      "config_id": "C3",
+      "stage_changed": "indexing",
+      "description": "Structure-aware chunking: split by headings, then cap at 256 tokens"
+    },
+    {
+      "config_id": "C4",
+      "stage_changed": "indexing",
+      "description": "Stronger embedding model (bge-small)"
+    },
+    {
+      "config_id": "C5",
+      "stage_changed": "retrieval",
+      "description": "Hybrid search: BM25 + dense, merged by rank fusion"
+    },
+    {
+      "config_id": "C6",
+      "stage_changed": "retrieval",
+      "description": "Cross-encoder re-ranking"
+    },
+    {
+      "config_id": "C7",
+      "stage_changed": "indexing",
+      "description": "Hybrid + rerank + contextual chunk headers"
     }
   ],
   "results": [
@@ -64,6 +94,348 @@
         "ingestion": 0,
         "indexing": 1,
         "retrieval": 2,
+        "generation": 0
+      }
+    },
+    {
+      "config_id": "C2",
+      "doc_id": "annual_report",
+      "hit_at_5": 0.4444444444444444,
+      "mrr": 0.3055555555555556,
+      "correctness": 0.65,
+      "faithfulness": 1.0,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 626.0,
+      "latency_p95_ms": 1217.0,
+      "tokens_per_query": 1503.7,
+      "failures_by_stage": {
+        "ingestion": 5,
+        "indexing": 2,
+        "retrieval": 0,
+        "generation": 0
+      }
+    },
+    {
+      "config_id": "C2",
+      "doc_id": "fund_doc",
+      "hit_at_5": 0.05555555555555555,
+      "mrr": 0.027777777777777776,
+      "correctness": 0.325,
+      "faithfulness": 1.0,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 565.0,
+      "latency_p95_ms": 980.0,
+      "tokens_per_query": 1296.75,
+      "failures_by_stage": {
+        "ingestion": 8,
+        "indexing": 2,
+        "retrieval": 4,
+        "generation": 0
+      }
+    },
+    {
+      "config_id": "C2",
+      "doc_id": "ghg_scope3",
+      "hit_at_5": 0.4444444444444444,
+      "mrr": 0.3888888888888889,
+      "correctness": 0.8,
+      "faithfulness": 1.0,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 978.0,
+      "latency_p95_ms": 12952.0,
+      "tokens_per_query": 1532.3,
+      "failures_by_stage": {
+        "ingestion": 1,
+        "indexing": 2,
+        "retrieval": 2,
+        "generation": 0
+      }
+    },
+    {
+      "config_id": "C3",
+      "doc_id": "annual_report",
+      "hit_at_5": 0.3888888888888889,
+      "mrr": 0.20092592592592592,
+      "correctness": 0.55,
+      "faithfulness": 0.9444444444444444,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 528.0,
+      "latency_p95_ms": 1054.0,
+      "tokens_per_query": 989.1,
+      "failures_by_stage": {
+        "ingestion": 5,
+        "indexing": 2,
+        "retrieval": 2,
+        "generation": 0
+      }
+    },
+    {
+      "config_id": "C3",
+      "doc_id": "fund_doc",
+      "hit_at_5": 0.05555555555555555,
+      "mrr": 0.05555555555555555,
+      "correctness": 0.225,
+      "faithfulness": 1.0,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 489.0,
+      "latency_p95_ms": 795.0,
+      "tokens_per_query": 877.0,
+      "failures_by_stage": {
+        "ingestion": 9,
+        "indexing": 2,
+        "retrieval": 5,
+        "generation": 0
+      }
+    },
+    {
+      "config_id": "C3",
+      "doc_id": "ghg_scope3",
+      "hit_at_5": 0.5,
+      "mrr": 0.4027777777777778,
+      "correctness": 0.8,
+      "faithfulness": 1.0,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 568.0,
+      "latency_p95_ms": 791.0,
+      "tokens_per_query": 963.2,
+      "failures_by_stage": {
+        "ingestion": 1,
+        "indexing": 0,
+        "retrieval": 3,
+        "generation": 0
+      }
+    },
+    {
+      "config_id": "C4",
+      "doc_id": "annual_report",
+      "hit_at_5": 0.3333333333333333,
+      "mrr": 0.24074074074074078,
+      "correctness": 0.5789473684210527,
+      "faithfulness": 0.9411764705882353,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 576.0,
+      "latency_p95_ms": 838.0,
+      "tokens_per_query": 1101.4,
+      "failures_by_stage": {
+        "ingestion": 3,
+        "indexing": 2,
+        "retrieval": 3,
+        "generation": 0
+      }
+    },
+    {
+      "config_id": "C4",
+      "doc_id": "fund_doc",
+      "hit_at_5": 0.1111111111111111,
+      "mrr": 0.08333333333333333,
+      "correctness": 0.375,
+      "faithfulness": 1.0,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 547.0,
+      "latency_p95_ms": 879.0,
+      "tokens_per_query": 1139.7,
+      "failures_by_stage": {
+        "ingestion": 9,
+        "indexing": 1,
+        "retrieval": 3,
+        "generation": 0
+      }
+    },
+    {
+      "config_id": "C4",
+      "doc_id": "ghg_scope3",
+      "hit_at_5": 0.5555555555555556,
+      "mrr": 0.4555555555555555,
+      "correctness": 0.775,
+      "faithfulness": 1.0,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 585.0,
+      "latency_p95_ms": 959.0,
+      "tokens_per_query": 1026.3,
+      "failures_by_stage": {
+        "ingestion": 2,
+        "indexing": 0,
+        "retrieval": 3,
+        "generation": 0
+      }
+    },
+    {
+      "config_id": "C5",
+      "doc_id": "annual_report",
+      "hit_at_5": 0.4444444444444444,
+      "mrr": 0.3074074074074074,
+      "correctness": 0.725,
+      "faithfulness": 1.0,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 665.0,
+      "latency_p95_ms": 1091.0,
+      "tokens_per_query": 1092.1,
+      "failures_by_stage": {
+        "ingestion": 4,
+        "indexing": 1,
+        "retrieval": 2,
+        "generation": 0
+      }
+    },
+    {
+      "config_id": "C5",
+      "doc_id": "fund_doc",
+      "hit_at_5": 0.2777777777777778,
+      "mrr": 0.11296296296296296,
+      "correctness": 0.475,
+      "faithfulness": 1.0,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 603.0,
+      "latency_p95_ms": 868.0,
+      "tokens_per_query": 1026.25,
+      "failures_by_stage": {
+        "ingestion": 9,
+        "indexing": 2,
+        "retrieval": 1,
+        "generation": 0
+      }
+    },
+    {
+      "config_id": "C5",
+      "doc_id": "ghg_scope3",
+      "hit_at_5": 0.5555555555555556,
+      "mrr": 0.4629629629629629,
+      "correctness": 0.85,
+      "faithfulness": 0.9444444444444444,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 690.0,
+      "latency_p95_ms": 1668.0,
+      "tokens_per_query": 1069.2,
+      "failures_by_stage": {
+        "ingestion": 1,
+        "indexing": 0,
+        "retrieval": 2,
+        "generation": 0
+      }
+    },
+    {
+      "config_id": "C6",
+      "doc_id": "annual_report",
+      "hit_at_5": 0.5,
+      "mrr": 0.36296296296296293,
+      "correctness": 0.8,
+      "faithfulness": 1.0,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 632.0,
+      "latency_p95_ms": 1842.0,
+      "tokens_per_query": 1141.25,
+      "failures_by_stage": {
+        "ingestion": 3,
+        "indexing": 1,
+        "retrieval": 1,
+        "generation": 0
+      }
+    },
+    {
+      "config_id": "C6",
+      "doc_id": "fund_doc",
+      "hit_at_5": 0.2777777777777778,
+      "mrr": 0.2777777777777778,
+      "correctness": 0.425,
+      "faithfulness": 1.0,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 713.0,
+      "latency_p95_ms": 1089.0,
+      "tokens_per_query": 1213.25,
+      "failures_by_stage": {
+        "ingestion": 10,
+        "indexing": 1,
+        "retrieval": 1,
+        "generation": 0
+      }
+    },
+    {
+      "config_id": "C6",
+      "doc_id": "ghg_scope3",
+      "hit_at_5": 0.5555555555555556,
+      "mrr": 0.4833333333333333,
+      "correctness": 0.875,
+      "faithfulness": 1.0,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 623.0,
+      "latency_p95_ms": 740.0,
+      "tokens_per_query": 1090.45,
+      "failures_by_stage": {
+        "ingestion": 1,
+        "indexing": 0,
+        "retrieval": 2,
+        "generation": 0
+      }
+    },
+    {
+      "config_id": "C7",
+      "doc_id": "annual_report",
+      "hit_at_5": 0.5,
+      "mrr": 0.36296296296296293,
+      "correctness": 0.75,
+      "faithfulness": 1.0,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 671.0,
+      "latency_p95_ms": 2541.0,
+      "tokens_per_query": 1135.7,
+      "failures_by_stage": {
+        "ingestion": 4,
+        "indexing": 1,
+        "retrieval": 1,
+        "generation": 0
+      }
+    },
+    {
+      "config_id": "C7",
+      "doc_id": "fund_doc",
+      "hit_at_5": 0.2777777777777778,
+      "mrr": 0.2777777777777778,
+      "correctness": 0.5,
+      "faithfulness": 0.8888888888888888,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 835.0,
+      "latency_p95_ms": 993065.0,
+      "tokens_per_query": 1144.8,
+      "failures_by_stage": {
+        "ingestion": 8,
+        "indexing": 1,
+        "retrieval": 1,
+        "generation": 0
+      }
+    },
+    {
+      "config_id": "C7",
+      "doc_id": "ghg_scope3",
+      "hit_at_5": 0.5,
+      "mrr": 0.4722222222222222,
+      "correctness": 0.875,
+      "faithfulness": 0.9444444444444444,
+      "refusal_accuracy": 1.0,
+      "over_refusals": 0,
+      "latency_p50_ms": 442727.0,
+      "latency_p95_ms": 1792683.0,
+      "tokens_per_query": 1046.15,
+      "failures_by_stage": {
+        "ingestion": 0,
+        "indexing": 0,
+        "retrieval": 3,
         "generation": 0
       }
     }

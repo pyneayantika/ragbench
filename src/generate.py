@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from dotenv import load_dotenv
-from groq import APIStatusError, Groq, RateLimitError
+from groq import APIConnectionError, APIStatusError, Groq, RateLimitError
 
 from src.prompts import GENERATOR_SYSTEM
 from src.settings import GENERATOR_MODEL, JUDGE_RPD, JUDGE_RPM, JUDGE_TPD, JUDGE_TPM
@@ -110,6 +110,26 @@ def _reasoning_tokens(usage: Any) -> int | None:
     return int(value) if value is not None else None
 
 
+def _retry_delay(exc: Exception, fallback: float) -> float:
+    headers = getattr(getattr(exc, "response", None), "headers", {}) or {}
+    retry_after = headers.get("retry-after")
+    if retry_after:
+        try:
+            return max(fallback, float(retry_after))
+        except ValueError:
+            pass
+    msg = str(exc)
+    match_m = re.search(r"try again in (\d+)m(\d+)(?:\.(\d+))?s", msg)
+    if match_m:
+        mins = float(match_m.group(1))
+        secs = float(match_m.group(2))
+        return max(fallback, mins * 60 + secs + 2.0)
+    match_s = re.search(r"try again in (\d+)(?:\.(\d+))?s", msg)
+    if match_s:
+        return max(fallback, float(match_s.group(1)) + 2.0)
+    return fallback
+
+
 def _create(messages: list[dict[str, str]]) -> Any:
     delay = 2.0
     for attempt in range(6):
@@ -121,13 +141,16 @@ def _create(messages: list[dict[str, str]]) -> Any:
                 reasoning_effort="low",
                 reasoning_format="parsed",
             )
-        except RateLimitError:
+        except (RateLimitError, APIStatusError) as exc:
+            if isinstance(exc, APIStatusError) and exc.status_code != 429 and attempt == 5:
+                raise
             if attempt == 5:
                 raise
+            delay = _retry_delay(exc, delay)
             time.sleep(delay)
             delay *= 2
-        except APIStatusError as exc:
-            if exc.status_code != 429 or attempt == 5:
+        except APIConnectionError:
+            if attempt == 5:
                 raise
             time.sleep(delay)
             delay *= 2
