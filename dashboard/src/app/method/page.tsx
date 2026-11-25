@@ -103,10 +103,9 @@ export default function MethodPage() {
 
       <div className="footer-note">
         Source repository:{" "}
-        <a href="https://github.com" target="_blank" rel="noreferrer">
-          RAGBench on GitHub
-        </a>{" "}
-        (update this URL with your public repo link before sharing).
+        <a href="https://github.com/pyneayantika/ragbench" target="_blank" rel="noreferrer">
+          github.com/pyneayantika/ragbench
+        </a>
       </div>
     </div>
   );
