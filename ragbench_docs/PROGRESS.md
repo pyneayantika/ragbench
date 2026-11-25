@@ -26,7 +26,7 @@
 | 8B | C2–C7 generate + judge + aggregate | ✅ Done | 7 configs × 3 docs (420 answers, 420 judged); results.json validated against B8; 0 missing citations; 1 judge_error (C4 AR-14) | 053d1c0 | C7 wins overall mean (70.8%); C6 wins annual_report (80.0%) |
 | 9 | Hand-score + judge agreement | ✅ Done | 20 blind hand scores joined; 18/20 (90.0%) agreement recorded in results.json; 2 disagreements listed | 7771afa | Seed 42, only 0.5-pt partial-credit diffs |
 | 10 | Analysis | ✅ Done | Evidence tables written to results/analysis_tables.md; <10 pt diffs flagged | 85e802c | Human to fill H1–H7, diagnoses, and winners in DECISION_LOG.md |
-| 11 | Dashboard | ✅ Done | Next.js static export built cleanly; all 4 B9 pages read public/results.json | [next commit] | Vercel deploy steps provided |
+| 11 | Dashboard | ✅ Done | Next.js static export built cleanly; all 4 B9 pages read public/results.json | ba86e8a | Vercel deploy steps provided |
 | 12 | Demo chat | ⬜ Not started | | | |
 | 12B | Pre-launch guardrail check | ⬜ Not started | | | |
 | 13 | Story (case study, Loom, post) | ⬜ Not started | | | |
