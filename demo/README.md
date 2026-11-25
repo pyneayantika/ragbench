@@ -2,7 +2,7 @@
 title: RAGBench Demo
 emoji: 📊
 colorFrom: blue
-colorTo: slate
+colorTo: gray
 sdk: gradio
 sdk_version: 6.32.0
 app_file: demo/app.py
