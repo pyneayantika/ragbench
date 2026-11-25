@@ -1,6 +1,9 @@
 {
-  "generated_at": "2026-11-25T03:54:47Z",
-  "judge_agreement": null,
+  "generated_at": "2026-11-25T16:16:10Z",
+  "judge_agreement": {
+    "n": 20,
+    "agreed": 18
+  },
   "fuzzy_threshold": 90,
   "configs": [
     {

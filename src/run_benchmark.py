@@ -18,7 +18,7 @@ from pathlib import Path
 
 from src.chunk import chunk_document, chunk_sig, get_tokenizer, token_count
 from src.config import load_config
-from src.evaluate import aggregate_document, build_results, score_question, summarise, validate_results
+from src.evaluate import aggregate_document, build_results, compute_judge_agreement, score_question, summarise, validate_results
 from src.generate import CALLS_PER_MINUTE, generate_answer
 from src.judge import confirm_judge_model, judge_answer, score_unanswerable
 from src.index import index_document
@@ -450,16 +450,47 @@ def run_aggregate(config_id: str, doc_name: str) -> None:
             configs.append(cfg)
             documents.extend(doc_list)
 
+    agreement, disagreements = compute_judge_agreement(
+        ROOT / "results" / "hand_scores.csv",
+        ROOT / "results" / "runs",
+    )
     payload = build_results(
         configs,
         documents,
         datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        judge_agreement=agreement,
     )
     problems = validate_results(payload)
     path = ROOT / "results" / "results.json"
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     logger.info("wrote %s", path.relative_to(ROOT))
     logger.info("results.json check: %s", "PASS" if not problems else "FAIL " + "; ".join(problems))
+    if agreement:
+        pct = 100.0 * agreement["agreed"] / agreement["n"]
+        logger.info("judge_agreement: %d/%d (%.1f%%)", agreement["agreed"], agreement["n"], pct)
+    if disagreements:
+        with GOLDEN_PATH.open(newline="", encoding="utf-8-sig") as handle:
+            golden_map = {r["qid"].strip(): r for r in csv.DictReader(handle)}
+        ans_map: dict[tuple[str, str], str] = {}
+        for apath in (ROOT / "results" / "runs").glob("*__answers.jsonl"):
+            for r in read_jsonl(apath):
+                ans_map[(str(r["qid"]), str(r["config_id"]))] = str(r.get("answer") or "")
+        logger.info("Disagreements (%d):", len(disagreements))
+        for d in disagreements:
+            g = golden_map.get(d["qid"], {})
+            ans = ans_map.get((d["qid"], d["config_id"]), "")
+            logger.info(
+                "--- %s [%s] ---\n  Question: %s\n  Gold: %s\n  Model Answer: %s\n  My Score: %s | Judge Score: %s\n  Judge Reason: %s\n  My Note: %s",
+                d["qid"],
+                d["config_id"],
+                g.get("question", ""),
+                g.get("gold_answer", ""),
+                ans,
+                d["my_score"],
+                d["judge_score"],
+                d["judge_reason"],
+                d["my_note"],
+            )
     for item in documents:
         logger.info(
             "%s correctness=%.3f faithfulness=%.3f refusal_accuracy=%.3f over_refusals=%d p50=%s p95=%s tokens_per_query=%.1f failures=%s",

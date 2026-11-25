@@ -1,0 +1,86 @@
+{
+  "seed": 42,
+  "count": 20,
+  "pairs": [
+    {
+      "qid": "AR-06",
+      "config_id": "C4"
+    },
+    {
+      "qid": "FD-15",
+      "config_id": "C5"
+    },
+    {
+      "qid": "FD-05",
+      "config_id": "C5"
+    },
+    {
+      "qid": "GH-05",
+      "config_id": "C4"
+    },
+    {
+      "qid": "GH-10",
+      "config_id": "C2"
+    },
+    {
+      "qid": "AR-15",
+      "config_id": "C7"
+    },
+    {
+      "qid": "FD-09",
+      "config_id": "C2"
+    },
+    {
+      "qid": "AR-09",
+      "config_id": "C6"
+    },
+    {
+      "qid": "GH-17",
+      "config_id": "C2"
+    },
+    {
+      "qid": "AR-08",
+      "config_id": "C7"
+    },
+    {
+      "qid": "FD-17",
+      "config_id": "C1"
+    },
+    {
+      "qid": "GH-18",
+      "config_id": "C1"
+    },
+    {
+      "qid": "AR-04",
+      "config_id": "C4"
+    },
+    {
+      "qid": "FD-14",
+      "config_id": "C5"
+    },
+    {
+      "qid": "AR-16",
+      "config_id": "C3"
+    },
+    {
+      "qid": "GH-03",
+      "config_id": "C3"
+    },
+    {
+      "qid": "FD-13",
+      "config_id": "C6"
+    },
+    {
+      "qid": "FD-10",
+      "config_id": "C6"
+    },
+    {
+      "qid": "AR-13",
+      "config_id": "C7"
+    },
+    {
+      "qid": "GH-16",
+      "config_id": "C3"
+    }
+  ]
+}

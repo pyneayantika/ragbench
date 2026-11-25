@@ -7,6 +7,9 @@ Failure stage: evaluation.
 
 from __future__ import annotations
 
+import csv
+import json
+from pathlib import Path
 from typing import Any
 
 from src.retrieve import dense_retrieve
@@ -260,10 +263,62 @@ def aggregate_document(
     }
 
 
-def build_results(configs: list[dict[str, Any]], documents: list[dict[str, Any]], generated_at: str) -> dict[str, Any]:
+def compute_judge_agreement(
+    hand_scores_path: Path,
+    runs_dir: Path,
+) -> tuple[dict[str, int] | None, list[dict[str, Any]]]:
+    if not hand_scores_path.is_file():
+        return None, []
+    judged: dict[tuple[str, str], dict[str, Any]] = {}
+    for path in sorted(runs_dir.glob("*__judged.jsonl")):
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                row = json.loads(line)
+                judged[(str(row["qid"]), str(row["config_id"]))] = row
+
+    n = 0
+    agreed = 0
+    disagreements: list[dict[str, Any]] = []
+    with hand_scores_path.open(newline="", encoding="utf-8-sig") as handle:
+        for row in csv.DictReader(handle):
+            raw_score = (row.get("my_score") or "").strip()
+            if not raw_score:
+                continue
+            qid = row["qid"].strip()
+            cid = row["config_id"].strip()
+            my_score = float(raw_score)
+            judge_row = judged.get((qid, cid))
+            if not judge_row or judge_row.get("judge_error") or judge_row.get("correctness") is None:
+                continue
+            judge_score = float(judge_row["correctness"])
+            n += 1
+            if my_score == judge_score:
+                agreed += 1
+            else:
+                disagreements.append(
+                    {
+                        "qid": qid,
+                        "config_id": cid,
+                        "my_score": my_score,
+                        "judge_score": judge_score,
+                        "judge_reason": str(judge_row.get("reason") or ""),
+                        "my_note": (row.get("note") or "").strip(),
+                    }
+                )
+    if n == 0:
+        return None, []
+    return {"n": n, "agreed": agreed}, disagreements
+
+
+def build_results(
+    configs: list[dict[str, Any]],
+    documents: list[dict[str, Any]],
+    generated_at: str,
+    judge_agreement: dict[str, int] | None = None,
+) -> dict[str, Any]:
     return {
         "generated_at": generated_at,
-        "judge_agreement": None,
+        "judge_agreement": judge_agreement,
         "fuzzy_threshold": THRESHOLD,
         "configs": [
             {
@@ -283,8 +338,10 @@ def validate_results(payload: dict[str, Any]) -> list[str]:
     problems: list[str] = []
     if set(payload) != set(TOP_KEYS):
         problems.append(f"top-level keys {sorted(payload)} != {list(TOP_KEYS)}")
-    if payload.get("judge_agreement") is not None:
-        problems.append("judge_agreement must be null until Step 9")
+    agreement = payload.get("judge_agreement")
+    if agreement is not None:
+        if not isinstance(agreement, dict) or set(agreement) != {"n", "agreed"}:
+            problems.append(f"judge_agreement must be null or {{n, agreed}}, got {agreement}")
     if payload.get("winners") != {}:
         problems.append("winners must be empty until Step 10")
     if payload.get("failure_examples") != []:
