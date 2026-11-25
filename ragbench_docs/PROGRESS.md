@@ -5,7 +5,7 @@
 
 ## Current status
 
-- **Current step:** Step 12B (Pre-launch guardrail check)
+- **Current step:** Step 13 (Story: case study, Loom, post)
 - **Last updated:** 2026-11-26, Antigravity
 - **Blocked on:** nothing
 
@@ -28,7 +28,7 @@
 | 10 | Analysis | ✅ Done | Evidence tables written to results/analysis_tables.md; <10 pt diffs flagged | 85e802c | Human to fill H1–H7, diagnoses, and winners in DECISION_LOG.md |
 | 11 | Dashboard | ✅ Done | Next.js static export built cleanly; all 4 B9 pages read public/results.json | ba86e8a | Vercel deploy steps provided |
 | 12 | Demo chat | ✅ Done | Gradio demo built (`C7` preloaded), GUARDRAILS §3 enforced, 2 answerable + 2 unanswerable + 1 prompt-injection tested locally | 4904ede | Packaged for HF Spaces |
-| 12B | Pre-launch guardrail check | ⬜ Not started | | | |
+| 12B | Pre-launch guardrail check | ✅ Done | All 6 GUARDRAILS §7 checks passed (0 leaked keys, .env/cache untracked, demo & dashboard verified) | — | Ready for Vercel + HF Spaces deploy |
 | 13 | Story (case study, Loom, post) | ⬜ Not started | | | |
 
 Status values: ⬜ Not started · 🟡 In progress · ✅ Done · 🔴 Blocked
@@ -37,6 +37,7 @@ Status values: ⬜ Not started · 🟡 In progress · ✅ Done · 🔴 Blocked
 
 | Date | Tool | What was done | What's next | Open issues |
 | --- | --- | --- | --- | --- |
+| 2026-11-26 | Antigravity | Step 12B completed: all 6 pre-launch guardrail checks in GUARDRAILS.md §7 passed. | Step 13: Case study, Loom, LinkedIn post (and deploy to Vercel / HF Spaces) | None |
 | 2026-11-26 | Antigravity | Step 12 completed: built Gradio 6.32.0 demo (`demo/app.py`) running C7 with GUARDRAILS §3 and HF Spaces packaging; all 5 local tests passed. | Step 12B: Pre-launch guardrail check | None |
 | 2026-11-25 | Antigravity | Step 11 completed: built static Next.js dashboard (Overview, Where it breaks, Failure examples, Method) reading public/results.json, verified local static build. | Step 12: Demo chat (Gradio / HF Spaces) | None |
 | 2026-11-25 | Antigravity | Step 10 analysis helper completed: generated evidence tables for H1–H7, failure examples, and per-doc rankings in results/analysis_tables.md. | Human fills DECISION_LOG.md (winners, failure diagnoses), then load into results.json and build Step 11 Dashboard | None |
