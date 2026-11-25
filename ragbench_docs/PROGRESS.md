@@ -5,7 +5,7 @@
 
 ## Current status
 
-- **Current step:** Step 10 (Human writing conclusions in DECISION_LOG.md) → Step 11 (Dashboard)
+- **Current step:** Step 12 (Demo chat)
 - **Last updated:** 2026-11-25, Antigravity
 - **Blocked on:** nothing
 
@@ -26,7 +26,7 @@
 | 8B | C2–C7 generate + judge + aggregate | ✅ Done | 7 configs × 3 docs (420 answers, 420 judged); results.json validated against B8; 0 missing citations; 1 judge_error (C4 AR-14) | 053d1c0 | C7 wins overall mean (70.8%); C6 wins annual_report (80.0%) |
 | 9 | Hand-score + judge agreement | ✅ Done | 20 blind hand scores joined; 18/20 (90.0%) agreement recorded in results.json; 2 disagreements listed | 7771afa | Seed 42, only 0.5-pt partial-credit diffs |
 | 10 | Analysis | ✅ Done | Evidence tables written to results/analysis_tables.md; <10 pt diffs flagged | 85e802c | Human to fill H1–H7, diagnoses, and winners in DECISION_LOG.md |
-| 11 | Dashboard | ⬜ Not started | | | |
+| 11 | Dashboard | ✅ Done | Next.js static export built cleanly; all 4 B9 pages read public/results.json | [next commit] | Vercel deploy steps provided |
 | 12 | Demo chat | ⬜ Not started | | | |
 | 12B | Pre-launch guardrail check | ⬜ Not started | | | |
 | 13 | Story (case study, Loom, post) | ⬜ Not started | | | |
@@ -37,6 +37,7 @@ Status values: ⬜ Not started · 🟡 In progress · ✅ Done · 🔴 Blocked
 
 | Date | Tool | What was done | What's next | Open issues |
 | --- | --- | --- | --- | --- |
+| 2026-11-25 | Antigravity | Step 11 completed: built static Next.js dashboard (Overview, Where it breaks, Failure examples, Method) reading public/results.json, verified local static build. | Step 12: Demo chat (Gradio / HF Spaces) | None |
 | 2026-11-25 | Antigravity | Step 10 analysis helper completed: generated evidence tables for H1–H7, failure examples, and per-doc rankings in results/analysis_tables.md. | Human fills DECISION_LOG.md (winners, failure diagnoses), then load into results.json and build Step 11 Dashboard | None |
 | 2026-11-25 | Antigravity | Step 9 completed: blind hand review of 20 sampled answers (seed 42) yielded 18/20 (90.0%) human-judge agreement, recorded in results.json. | Step 10: Analysis (hypotheses H1-H7, failure examples, winners) | None |
 | 2026-11-25 | Antigravity | Step 8B completed: generated and judged all remaining configs C2–C7 across all 3 docs (420 total answers, 1 judge_error on C4 AR-14). Validated complete 21-row results.json. | Step 9: Human hand-scores 20 answers in results/hand_scores.csv, then compute judge agreement | None |
