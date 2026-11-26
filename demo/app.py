@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 import gradio as gr
+import spaces
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -86,11 +87,17 @@ WINNING_CONFIG = load_config(WINNING_CONFIG_ID)
 
 
 def preload_models() -> None:
-    """Load embedding and reranker models once at startup (never per question)."""
+    """Load prebuilt indexes and models once at startup on CPU, outside any GPU function."""
     get_embedder(str(WINNING_CONFIG["embedding_model"]))
     rerank_cfg = WINNING_CONFIG.get("rerank") or {}
     if rerank_cfg.get("enabled") and rerank_cfg.get("model"):
         get_reranker(str(rerank_cfg["model"]))
+
+
+@spaces.GPU(duration=30)
+def _retrieve_on_gpu(doc_id: str, query: str) -> list[dict[str, Any]]:
+    """Run per-question model work (query embedding + cross-encoder re-ranking) on ZeroGPU."""
+    return retrieve_chunks(doc_id, WINNING_CONFIG, query)
 
 
 def _format_chunks_markdown(doc_id: str, hits: list[dict[str, Any]]) -> str:
@@ -176,7 +183,20 @@ def answer_question(
                 f"Session questions used: {session_count} / {MAX_QUESTIONS_PER_SESSION}",
             )
 
-    hits = retrieve_chunks(doc_id, WINNING_CONFIG, cleaned)
+    try:
+        hits = _retrieve_on_gpu(doc_id, cleaned)
+    except Exception as exc:
+        msg = str(exc).lower()
+        if "quota" in msg or "zerogpu" in msg or "gpu" in msg or "exceeded" in msg:
+            return (
+                "Free Hugging Face ZeroGPU quota is temporarily exhausted. Please wait a minute and try again.",
+                "None (ZeroGPU quota exhausted)",
+                "_Retrieval paused due to ZeroGPU quota limit._",
+                session_count,
+                f"Session questions used: {session_count} / {MAX_QUESTIONS_PER_SESSION}",
+            )
+        raise
+
     passages = [(int(hit["page_start"]), str(hit["text"])) for hit in hits]
     result = generate_answer(cleaned, doc_id, passages, calls_per_minute=30.0)
     answer_text = str(result["answer"])

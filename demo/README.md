@@ -11,7 +11,7 @@ pinned: false
 
 # RAGBench — Grounded Document Q&A Demo
 
-Interactive Gradio demo running the winning **C7** configuration (`layout` parsing, `structure` chunking with contextual headers, `BAAI/bge-small-en-v1.5`, hybrid Dense + BM25 RRF, and `cross-encoder/ms-marco-MiniLM-L-6-v2` re-ranking) on a prebuilt index.
+Interactive Gradio demo running the winning **C7** configuration (`layout` parsing, `structure` chunking with contextual headers, `BAAI/bge-small-en-v1.5`, hybrid Dense + BM25 RRF, and `cross-encoder/ms-marco-MiniLM-L-6-v2` re-ranking) on a prebuilt index, adapted for Hugging Face **ZeroGPU** (`@spaces.GPU(duration=30)`).
 
 ## Deploying to Hugging Face Spaces
 

@@ -37,6 +37,7 @@ Status values: ⬜ Not started · 🟡 In progress · ✅ Done · 🔴 Blocked
 
 | Date | Tool | What was done | What's next | Open issues |
 | --- | --- | --- | --- | --- |
+| 2026-11-26 | Antigravity | Deployed dashboard to Vercel and adapted demo (`demo/app.py`) for Hugging Face ZeroGPU (`@spaces.GPU(duration=30)` with quota fallback), uploaded to `Ayontika123/ragbench`. | Step 13: Case study, Loom, LinkedIn post | None |
 | 2026-11-26 | Antigravity | Step 12B completed: all 6 pre-launch guardrail checks in GUARDRAILS.md §7 passed. | Step 13: Case study, Loom, LinkedIn post (and deploy to Vercel / HF Spaces) | None |
 | 2026-11-26 | Antigravity | Step 12 completed: built Gradio 6.32.0 demo (`demo/app.py`) running C7 with GUARDRAILS §3 and HF Spaces packaging; all 5 local tests passed. | Step 12B: Pre-launch guardrail check | None |
 | 2026-11-25 | Antigravity | Step 11 completed: built static Next.js dashboard (Overview, Where it breaks, Failure examples, Method) reading public/results.json, verified local static build. | Step 12: Demo chat (Gradio / HF Spaces) | None |
